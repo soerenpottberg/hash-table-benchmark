@@ -7,8 +7,8 @@ public class MultiplicativeHashFunction implements IHashFunction {
 	@Override
 	public int hash(long key, int storageSize) {
 		
-        return storageSize * (int)(key * GOLDEN_RATIO - (int)(key * GOLDEN_RATIO));
-        
+		double irrationalNumber = GOLDEN_RATIO - 1;
+        return (int) (storageSize * (key * irrationalNumber - (long)(key * irrationalNumber)));
 	}
 
 }
