@@ -16,6 +16,7 @@ public abstract class OpenAddressingHashTable extends HashTable{
 		
 	}
 	
+	@Override
 	public void saveEntry(HashTableEntry entry) {
 		
 		// Berechne den Hashcode zum speichern
@@ -31,7 +32,8 @@ public abstract class OpenAddressingHashTable extends HashTable{
 		
 	}
 	
-	public HashTableEntry readEntry(long key){
+	@Override
+	public HashTableEntry readEntry(int key){
 		
 		// Berechne den Hashcode zum lesen
 		int hashCode = hashFunction.hash(key, storageSize);

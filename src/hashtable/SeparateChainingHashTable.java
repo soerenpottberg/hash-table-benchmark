@@ -22,7 +22,7 @@ public class SeparateChainingHashTable extends HashTable {
 	}
 
 	@Override
-	public HashTableEntry readEntry(long key) {
+	public HashTableEntry readEntry(int key) {
 		// TODO Auto-generated method stub
 		return null;
 	}

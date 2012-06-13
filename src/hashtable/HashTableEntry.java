@@ -9,7 +9,7 @@ public class HashTableEntry {
 	 * @param key der Schlüssel des Eintrages
 	 * @param data die Daten des Eintrages
 	 */
-	public HashTableEntry(long key, Object data) {
+	public HashTableEntry(Integer key, Object data) {
 		
 	}
 }

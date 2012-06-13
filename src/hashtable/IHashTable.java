@@ -13,6 +13,6 @@ public interface IHashTable {
 	 * @param key der Schlüssel des Eintrages
 	 * @return der Eintrag
 	 */
-	HashTableEntry readEntry(long key);
+	HashTableEntry readEntry(int key);
 	
 }
