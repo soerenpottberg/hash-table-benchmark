@@ -1,14 +1,14 @@
 package main;
 
+import java.util.HashSet;
 import java.util.Random;
 import java.util.Set;
-import java.util.TreeSet;
 
 public class Universum {
 	
 	public Integer[] generateKeys(int count) {
 		
-		Set<Integer> keySet = new TreeSet<Integer>();
+		Set<Integer> keySet = new HashSet<Integer>();
 		Random random       = new Random();
 		Integer[] keys      = new Integer[count];
 		
