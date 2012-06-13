@@ -11,6 +11,8 @@ public class DoubleHashingProbingFunction implements IProbingFunction {
 	 */
 	public DoubleHashingProbingFunction(IHashFunction hashFunction) {
 		
+		this.hashFunction = hashFunction;
+		
 	}
 	
 	@Override

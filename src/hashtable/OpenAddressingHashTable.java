@@ -20,13 +20,13 @@ public abstract class OpenAddressingHashTable extends HashTable{
 	public void saveEntry(HashTableEntry entry) {
 		
 		// Berechne den Hashcode zum speichern
-		int hashCode = hashFunction.hash(entry.key, storageSize);
+		int hashCode = hashFunction.hash(entry.getKey(), storageSize);
 		
 		// Kollisionserkennung
 		int tries = 0;
-		while(hashTable[hashCode] != null && hashTable[hashCode].key != entry.key) {
+		while(hashTable[hashCode] != null && hashTable[hashCode].getKey() != entry.getKey()) {
 			tries++;
-			hashCode = (hashCode + probingFunction.probe(entry.key, storageSize, tries)) % storageSize;
+			hashCode = (hashCode + probingFunction.probe(entry.getKey(), storageSize, tries)) % storageSize;
 		}
 		hashTable[hashCode] = entry;
 		
@@ -40,7 +40,7 @@ public abstract class OpenAddressingHashTable extends HashTable{
 		
 		// Kollisionserkennung
 		int tries = 0;
-		while(hashTable[hashCode] != null && hashTable[hashCode].key != key) {
+		while(hashTable[hashCode] != null && hashTable[hashCode].getKey() != key) {
 			tries++;
 			hashCode = (hashCode + probingFunction.probe(key, storageSize, tries)) % storageSize;
 		}

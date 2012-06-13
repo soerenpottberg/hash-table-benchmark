@@ -3,6 +3,11 @@ package main;
 import hashfunction.DivisionRemainderHashFunction;
 import hashfunction.IHashFunction;
 import hashfunction.MultiplicativeHashFunction;
+import hashtable.DoubleHashingHashTable;
+import hashtable.HashTableEntry;
+import hashtable.IHashTable;
+import hashtable.LinearProbingHashTable;
+import hashtable.QuadraticProbingHashTable;
 
 public class Benchmark {
 
@@ -35,18 +40,25 @@ public class Benchmark {
 
 		int keyCount = (int) (beta * STORE_SIZE);
 		Integer[] keys = new Universum().generateKeys(keyCount);
-
-		System.out.println("Keys: ");
-		for (Integer key : keys) {
-			System.out.println(key);
-		}
 		
 		// IHashFunction hashFunction = new DivisionRemainderHashFunction();
 		IHashFunction hashFunction = new MultiplicativeHashFunction();
 		
-		System.out.println("HashCodes");
+		// IHashTable hashTable = new LinearProbingHashTable(STORE_SIZE, hashFunction);
+		// IHashTable hashTable = new QuadraticProbingHashTable(STORE_SIZE, hashFunction);
+		IHashTable hashTable = new DoubleHashingHashTable(STORE_SIZE, hashFunction);
+		
 		for (Integer key : keys) {
-			System.out.println(hashFunction.hash(key, STORE_SIZE));
+			System.out.println(key);
+			HashTableEntry entry = new HashTableEntry(key, null);
+			hashTable.saveEntry(entry);
+		}
+		
+		for (Integer key : keys) {
+			HashTableEntry entry;
+			entry = hashTable.readEntry(key);
+			System.out.println(key);
+			System.out.println(entry.getKey());
 		}
 		
 		

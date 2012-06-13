@@ -13,7 +13,8 @@ public abstract class HashTable implements IHashTable {
 	 * @param hashFunction die zuverwendende Hashfunktion
 	 */
 	public HashTable(int storageSize, IHashFunction hashFunction) {
-		this.storageSize = storageSize;
+		this.storageSize  = storageSize;
+		this.hashFunction = hashFunction;
 	}
 	
 }
