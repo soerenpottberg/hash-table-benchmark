@@ -1,5 +1,8 @@
 package hashtable;
 
+import hashfunction.IHashFunction;
+import probingfunction.QuadraticProbingFunction;
+
 
 /**
  * 
@@ -7,6 +10,12 @@ package hashtable;
  * @author Sören Pottberg
  *
  */
-public class QuadraticProbingHashTable extends HashTable {
+public class QuadraticProbingHashTable extends OpenAddressingHashTable {
+
+	public QuadraticProbingHashTable(int storageSize, IHashFunction hashFunction) {
+		
+		super(storageSize, hashFunction, new QuadraticProbingFunction());
+		
+	}
 
 }

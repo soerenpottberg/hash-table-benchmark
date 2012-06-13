@@ -1,5 +1,8 @@
 package hashtable;
 
+import hashfunction.IHashFunction;
+import probingfunction.LinearProbingFunction;
+
 
 /**
  * 
@@ -7,6 +10,12 @@ package hashtable;
  * @author Sören Pottberg
  *
  */
-public class LinearProbingHashTable extends HashTable {
+public class LinearProbingHashTable extends OpenAddressingHashTable {
+
+	public LinearProbingHashTable(int storageSize, IHashFunction hashFunction) {
+		
+		super(storageSize, hashFunction, new LinearProbingFunction());
+		
+	}
 
 }
