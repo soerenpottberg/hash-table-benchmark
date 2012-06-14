@@ -5,8 +5,9 @@ public interface IHashTable {
 	/**
 	 * Speichert einen Eintrag in der Hashtable
 	 * @param HashTableEntry der Eintrag
+	 * @throws Exception 
 	 */
-	void saveEntry(HashTableEntry entry);
+	void saveEntry(HashTableEntry entry) throws Exception;
 	
 	/**
 	 * Liest einen Eintrag aus der Hashtable
@@ -14,5 +15,23 @@ public interface IHashTable {
 	 * @return der Eintrag
 	 */
 	HashTableEntry readEntry(int key);
+	
+	/**
+	 * 
+	 * @return Speicherversuche
+	 */
+	int getSaveTries();
+
+    /**
+     * 
+     * @return Leseversuche
+     */
+    int getReadTries();
+
+    /**
+     * Leseversuche zurücksetzen
+     */
+	void resetReadTries();
+	
 	
 }

@@ -17,16 +17,19 @@ public abstract class OpenAddressingHashTable extends HashTable{
 	}
 	
 	@Override
-	public void saveEntry(HashTableEntry entry) {
+	public void saveEntry(HashTableEntry entry) throws Exception {
 		
 		// Berechne den Hashcode zum speichern
 		int hashCode = hashFunction.hash(entry.getKey(), storageSize);
+		int firstHashCode = hashCode;
 		
 		// Kollisionserkennung
-		int tries = 0;
 		while(hashTable[hashCode] != null && hashTable[hashCode].getKey() != entry.getKey()) {
-			tries++;
-			hashCode = (hashCode + probingFunction.probe(entry.getKey(), storageSize, tries)) % storageSize;
+			saveTries++;
+			hashCode = (hashCode + probingFunction.probe(entry.getKey(), storageSize, saveTries)) % storageSize;
+			if(hashCode == firstHashCode) {
+				throw new Exception("Sondierung fehlgeschlagen.");
+			}
 		}
 		hashTable[hashCode] = entry;
 		
@@ -37,12 +40,15 @@ public abstract class OpenAddressingHashTable extends HashTable{
 		
 		// Berechne den Hashcode zum lesen
 		int hashCode = hashFunction.hash(key, storageSize);
+		int firstHashCode = hashCode;
 		
 		// Kollisionserkennung
-		int tries = 0;
 		while(hashTable[hashCode] != null && hashTable[hashCode].getKey() != key) {
-			tries++;
-			hashCode = (hashCode + probingFunction.probe(key, storageSize, tries)) % storageSize;
+			readTries++;
+			hashCode = (hashCode + probingFunction.probe(key, storageSize, readTries)) % storageSize;
+			if(hashCode == firstHashCode) {
+				return null;
+			}
 		}
 		
 		return hashTable[hashCode];

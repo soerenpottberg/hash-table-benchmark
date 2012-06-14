@@ -25,7 +25,7 @@ public class Benchmark {
 	 * 947, 953, 967, 971, 977, 983, 991, 997
 	 */
 
-	static final int STORE_SIZE = 101;
+	static final int STORAGE_SIZE = 101;
 
 	/**
 	 * Füllstand
@@ -38,28 +38,74 @@ public class Benchmark {
 	 */
 	public static void main(String[] args) {
 
-		int keyCount = (int) (beta * STORE_SIZE);
-		Integer[] keys = new Universum().generateKeys(keyCount);
+		int keyCount = (int) (beta * STORAGE_SIZE);
+		Integer[] keys = Universum.generateKeys(keyCount);
+		Integer[] shuffledExistingKeys = Universum.shuffleKeys(keys);
+		Integer[] notExistingKeys      = Universum.generateNotExistingKeys(keyCount);
 		
 		// IHashFunction hashFunction = new DivisionRemainderHashFunction();
 		IHashFunction hashFunction = new MultiplicativeHashFunction();
 		
 		// IHashTable hashTable = new LinearProbingHashTable(STORE_SIZE, hashFunction);
 		// IHashTable hashTable = new QuadraticProbingHashTable(STORE_SIZE, hashFunction);
-		IHashTable hashTable = new DoubleHashingHashTable(STORE_SIZE, hashFunction);
+		IHashTable hashTable = new DoubleHashingHashTable(STORAGE_SIZE, hashFunction);
 		
+		System.out.println("Saving...");
 		for (Integer key : keys) {
-			System.out.println(key);
-			HashTableEntry entry = new HashTableEntry(key, null);
-			hashTable.saveEntry(entry);
+			System.out.print("Key: ");
+			System.out.print(key);
+			System.out.print("; ");
+			HashTableEntry entry = new HashTableEntry(key, "Ben");
+			try {
+				hashTable.saveEntry(entry);
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 		
-		for (Integer key : keys) {
+		System.out.println("\n");
+		System.out.println("Versuche:");
+		System.out.println((keyCount + hashTable.getSaveTries()) / (float)keyCount);
+		
+		System.out.println();
+		System.out.println("Reading...");
+		for (Integer key : shuffledExistingKeys) {
 			HashTableEntry entry;
 			entry = hashTable.readEntry(key);
-			System.out.println(key);
-			System.out.println(entry.getKey());
+			System.out.print("Key: ");
+			System.out.print(key);
+			System.out.print(" [Key: ");
+			System.out.print(entry.getKey());
+			System.out.print(" Data: ");
+			System.out.print(entry.getData());
+			System.out.print("]; ");
+
 		}
+		
+		System.out.println("\n");
+		System.out.println("Versuche:");
+		System.out.println((keyCount + hashTable.getReadTries()) / (float)keyCount);
+		
+		hashTable.resetReadTries();
+		
+		
+		System.out.println();
+		System.out.println("Reading not existing...");
+		for (Integer key : notExistingKeys) {
+			HashTableEntry entry;
+			entry = hashTable.readEntry(key);
+			System.out.print(" Key: ");
+			System.out.print(key);
+			System.out.print(" [");
+			System.out.print(entry);
+			System.out.print("]; ");
+
+		}
+		
+		System.out.println("\n");
+		System.out.println("Versuche:");
+		System.out.println((keyCount + hashTable.getReadTries()) / (float)keyCount);
 		
 		
 

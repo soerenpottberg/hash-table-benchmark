@@ -3,7 +3,7 @@ package hashtable;
 public class HashTableEntry {
 	
 	private int key;
-	protected Object data;
+	private Object data;
 	
 	/**
 	 * @param key der Schlüssel des Eintrages
@@ -11,11 +11,19 @@ public class HashTableEntry {
 	 */
 	public HashTableEntry(int key, Object data) {
 		this.key  = key;
-		this.data = data;
+		this.setData(data);
 	}
 
 	public int getKey() {
 		return key;
+	}
+
+	public Object getData() {
+		return data;
+	}
+
+	public void setData(Object data) {
+		this.data = data;
 	}
 	
 }

@@ -6,7 +6,7 @@ import hashfunction.IHashFunction;
 
 /**
  * 
- * Coalesced Hashing
+ * Double Hashing
  * @author Sören Pottberg
  *
  */

@@ -7,6 +7,8 @@ public abstract class HashTable implements IHashTable {
 	
 	protected int storageSize;
 	protected IHashFunction hashFunction;
+	protected int saveTries = 0;
+	protected int readTries = 0;
 	
 	/**
 	 * @param storageSize die Größe der Hashtable
@@ -15,6 +17,18 @@ public abstract class HashTable implements IHashTable {
 	public HashTable(int storageSize, IHashFunction hashFunction) {
 		this.storageSize  = storageSize;
 		this.hashFunction = hashFunction;
+	}
+	
+	public int getSaveTries() {
+		return saveTries;
+	}
+
+	public int getReadTries() {
+		return readTries;
+	}
+	
+	public void resetReadTries() {
+		readTries = 0;
 	}
 	
 }
