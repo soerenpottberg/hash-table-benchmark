@@ -29,7 +29,7 @@ public abstract class OpenAddressingHashTable extends HashTable{
 		while(hashTable[hashCode] != null && hashTable[hashCode].getKey() != entry.getKey()) {
 			tries ++;
 			saveTries++;
-			hashCode = (firstHashCode + probingFunction.probe(entry.getKey(), storageSize, tries)) % storageSize;
+			hashCode = calculateHashTableIndex(firstHashCode + probingFunction.probe(entry.getKey(), storageSize, tries), storageSize);
 			if(hashCode == firstHashCode) {
 				throw new Exception("Sondierung fehlgeschlagen.");
 			}
@@ -51,7 +51,7 @@ public abstract class OpenAddressingHashTable extends HashTable{
 		while(hashTable[hashCode] != null && hashTable[hashCode].getKey() != key) {
 			tries ++;
 			readTries++;
-			hashCode = (firstHashCode + probingFunction.probe(key, storageSize, tries)) % storageSize;
+			hashCode = calculateHashTableIndex(firstHashCode + probingFunction.probe(key, storageSize, tries), storageSize);
 			if(hashCode == firstHashCode) {
 				return null;
 			}

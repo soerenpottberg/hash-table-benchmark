@@ -1,5 +1,6 @@
 package test;
 
+import hashtable.HashTable;
 import hashtable.HashTableEntry;
 import hashtable.IHashTable;
 
@@ -7,6 +8,40 @@ import junit.framework.TestCase;
 
 public class HashTableTest extends TestCase {
 
+	public void testCalculateHashTableIndex() {
+		
+		assertEquals(0, HashTable.calculateHashTableIndex(0, 3));
+		assertEquals(1, HashTable.calculateHashTableIndex(1, 3));
+		assertEquals(2, HashTable.calculateHashTableIndex(2, 3));
+		assertEquals(0, HashTable.calculateHashTableIndex(3, 3));
+		assertEquals(1, HashTable.calculateHashTableIndex(4, 3));
+		assertEquals(2, HashTable.calculateHashTableIndex(5, 3));
+		
+		assertEquals(2, HashTable.calculateHashTableIndex(-1, 3));
+		assertEquals(1, HashTable.calculateHashTableIndex(-2, 3));
+		assertEquals(0, HashTable.calculateHashTableIndex(-3, 3));
+		assertEquals(2, HashTable.calculateHashTableIndex(-4, 3));
+		assertEquals(1, HashTable.calculateHashTableIndex(-5, 3));
+		
+	}
+	
+	public void runCollisionTest(IHashTable hashTable) {
+		
+		try {
+            assertEquals(0, hashTable.getSaveTries());
+			hashTable.saveEntry(new HashTableEntry(0, null));
+			assertEquals(1, hashTable.getSaveTries());
+			hashTable.saveEntry(new HashTableEntry(1, null));
+			assertEquals(3, hashTable.getSaveTries());
+			hashTable.saveEntry(new HashTableEntry(2, null));
+            assertEquals(6, hashTable.getSaveTries());
+		} catch (Exception e) {
+			e.printStackTrace();
+			assertTrue(false);
+		}
+		
+	}
+	
 	public void runDataLossTest(IHashTable hashTable) {
 		
 		try {

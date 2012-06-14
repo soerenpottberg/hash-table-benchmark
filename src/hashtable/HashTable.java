@@ -31,4 +31,20 @@ public abstract class HashTable implements IHashTable {
 		readTries = 0;
 	}
 	
+	/**
+	 * Berechnet den physikalischen Index in der Hashtable
+	 * @param hashCode der HashCode
+	 * @param storageSize die Größe der Hashtable
+	 * @return der Index
+	 */
+	public static int calculateHashTableIndex(int hashCode, int storageSize) {
+		
+		int index = hashCode % storageSize;
+		if (index < 0) {
+			index += storageSize;
+		}
+		return index;
+		
+	}
+	
 }
