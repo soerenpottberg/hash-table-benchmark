@@ -24,9 +24,12 @@ public abstract class OpenAddressingHashTable extends HashTable{
 		int firstHashCode = hashCode;
 		
 		// Kollisionserkennung
+		int tries = 0;
+		saveTries++;
 		while(hashTable[hashCode] != null && hashTable[hashCode].getKey() != entry.getKey()) {
+			tries ++;
 			saveTries++;
-			hashCode = (hashCode + probingFunction.probe(entry.getKey(), storageSize, saveTries)) % storageSize;
+			hashCode = (hashCode + probingFunction.probe(entry.getKey(), storageSize, tries)) % storageSize;
 			if(hashCode == firstHashCode) {
 				throw new Exception("Sondierung fehlgeschlagen.");
 			}
@@ -43,9 +46,12 @@ public abstract class OpenAddressingHashTable extends HashTable{
 		int firstHashCode = hashCode;
 		
 		// Kollisionserkennung
+		int tries = 0;
+		readTries++;
 		while(hashTable[hashCode] != null && hashTable[hashCode].getKey() != key) {
+			tries ++;
 			readTries++;
-			hashCode = (hashCode + probingFunction.probe(key, storageSize, readTries)) % storageSize;
+			hashCode = (hashCode + probingFunction.probe(key, storageSize, tries)) % storageSize;
 			if(hashCode == firstHashCode) {
 				return null;
 			}

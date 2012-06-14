@@ -91,7 +91,7 @@ public class Benchmark {
 		
 		/*System.out.println("\n");
 		System.out.println("Versuche:");
-		System.out.println((keyCount + hashTable.getSaveTries()) / (float)keyCount);*/
+		System.out.println((hashTable.getSaveTries()) / (float)keyCount);*/
 		
 		//System.out.println();
 		//System.out.println("Reading...");
@@ -109,7 +109,7 @@ public class Benchmark {
 		}
 		
 		System.out.println("Erfolgreiches Lesen:");
-		System.out.println((keyCount + hashTable.getReadTries()) / (float)keyCount);
+		System.out.println((hashTable.getReadTries()) / (float)keyCount);
 		
 		hashTable.resetReadTries();
 		
@@ -128,7 +128,7 @@ public class Benchmark {
 		}
 		
 		System.out.println("Erfolgloses Lesen:");
-		System.out.println((keyCount + hashTable.getReadTries()) / (float)keyCount);
+		System.out.println((hashTable.getReadTries()) / (float)keyCount);
 		
 	}
 
