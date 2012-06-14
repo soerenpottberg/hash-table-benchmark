@@ -48,11 +48,12 @@ public class Benchmark {
 		// IHashFunction hashFunction = new MultiplicativeHashFunction();
 		
 		IHashTable[] hashTables = new IHashTable[3];
-		hashTables[0] = new LinearProbingHashTable(STORAGE_SIZE, hashFunction);
-		hashTables[1] = new QuadraticProbingHashTable(STORAGE_SIZE, hashFunction);
-		hashTables[2] = new DoubleHashingHashTable(STORAGE_SIZE, hashFunction);
 		
 		for (double beta : betas) {
+			
+			hashTables[0] = new LinearProbingHashTable(STORAGE_SIZE, hashFunction);
+			hashTables[1] = new QuadraticProbingHashTable(STORAGE_SIZE, hashFunction);
+			hashTables[2] = new DoubleHashingHashTable(STORAGE_SIZE, hashFunction);
 			
 			keyCount = (int) (beta * STORAGE_SIZE);
 			keys                 = Universum.generateKeys(keyCount);
