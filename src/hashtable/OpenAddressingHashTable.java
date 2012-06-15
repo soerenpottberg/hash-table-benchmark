@@ -1,5 +1,7 @@
 package hashtable;
 
+import java.util.Arrays;
+
 import probingfunction.IProbingFunction;
 import hashfunction.IHashFunction;
 
@@ -23,6 +25,10 @@ public abstract class OpenAddressingHashTable extends HashTable{
 		int hashCode = hashFunction.hash(entry.getKey(), storageSize);
 		int firstHashCode = hashCode;
 		
+		// Für Debugging-Zwecke
+		int hashCodes[] = new int[storageSize + 1];
+		hashCodes[0] = hashCode;
+		
 		// Kollisionserkennung
 		int tries = 0;
 		saveTries++;
@@ -30,8 +36,9 @@ public abstract class OpenAddressingHashTable extends HashTable{
 			tries ++;
 			saveTries++;
 			hashCode = calculateHashTableIndex(firstHashCode + probingFunction.probe(entry.getKey(), storageSize, tries), storageSize);
-			if(tries >= 2 * storageSize) {
-				throw new Exception("Sondierung fehlgeschlagen.");
+			hashCodes[tries] = hashCode;
+			if(tries >= storageSize) {
+				throw new Exception("Sondierung fehlgeschlagen. " + Arrays.toString(hashCodes));
 			}
 		}
 		hashTable[hashCode] = entry;
@@ -52,7 +59,7 @@ public abstract class OpenAddressingHashTable extends HashTable{
 			tries ++;
 			readTries++;
 			hashCode = calculateHashTableIndex(firstHashCode + probingFunction.probe(key, storageSize, tries), storageSize);
-			if(tries >= 2 * storageSize) {
+			if(tries >= storageSize) {
 				return null;
 			}
 		}
