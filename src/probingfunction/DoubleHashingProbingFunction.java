@@ -19,7 +19,7 @@ public class DoubleHashingProbingFunction implements IProbingFunction {
 	public int probe(long key, int storageSize, int tries) {
 
 		// storageSize - 2 ist prim zu storageSize
-		return tries * hashFunction.hash(key, storageSize - 2);
+		return tries * (hashFunction.hash(key, storageSize - 2) + 1);
 		
 	}
 

@@ -30,7 +30,7 @@ public abstract class OpenAddressingHashTable extends HashTable{
 			tries ++;
 			saveTries++;
 			hashCode = calculateHashTableIndex(firstHashCode + probingFunction.probe(entry.getKey(), storageSize, tries), storageSize);
-			if(hashCode == firstHashCode) {
+			if(tries >= 2 * storageSize) {
 				throw new Exception("Sondierung fehlgeschlagen.");
 			}
 		}
@@ -52,7 +52,7 @@ public abstract class OpenAddressingHashTable extends HashTable{
 			tries ++;
 			readTries++;
 			hashCode = calculateHashTableIndex(firstHashCode + probingFunction.probe(key, storageSize, tries), storageSize);
-			if(hashCode == firstHashCode) {
+			if(tries >= 2 * storageSize) {
 				return null;
 			}
 		}
