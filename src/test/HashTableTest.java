@@ -23,6 +23,13 @@ public class HashTableTest extends TestCase {
 		assertEquals(2, HashTable.calculateHashTableIndex(-4, 3));
 		assertEquals(1, HashTable.calculateHashTableIndex(-5, 3));
 		
+		for (int i = 1; i <= 1000; i++) {
+			for (int j = -1000; j <= 1000; j++) {
+				assertTrue(HashTable.calculateHashTableIndex(j, i) < i);
+				assertTrue(HashTable.calculateHashTableIndex(j, i) >= 0);
+			}
+		}
+		
 	}
 	
 	public void runCollisionTest(IHashTable hashTable) {
