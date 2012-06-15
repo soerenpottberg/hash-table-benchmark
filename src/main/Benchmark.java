@@ -76,37 +76,19 @@ public class Benchmark {
 
 	private static void runTest(IHashTable hashTable) {
 
-		//System.out.println("Saving...");
+		// Saving
 		for (Integer key : keys) {
-			/*System.out.print("Key: ");
-			System.out.print(key);
-			System.out.print("; ");*/
 			HashTableEntry entry = new HashTableEntry(key, "Ben");
 			try {
 				hashTable.saveEntry(entry);
 			} catch (Exception e) {
-				// TODO Auto-generated catch block
-				//e.printStackTrace();
+				System.err.println("Sondierung Fehlgeschlagen: " + hashTable.getClass().getSimpleName());
 			}
 		}
-		
-		/*System.out.println("\n");
-		System.out.println("Versuche:");
-		System.out.println((hashTable.getSaveTries()) / (float)keyCount);*/
-		
-		//System.out.println();
-		//System.out.println("Reading...");
-		for (Integer key : shuffledExistingKeys) {
-			HashTableEntry entry;
-			entry = hashTable.readEntry(key);
-			/*System.out.print("Key: ");
-			System.out.print(key);
-			System.out.print(" [Key: ");
-			System.out.print(entry.getKey());
-			System.out.print(" Data: ");
-			System.out.print(entry.getData());
-			System.out.print("]; ");*/
 
+		// Erfolgreiches Lesen
+		for (Integer key : shuffledExistingKeys) {
+			hashTable.readEntry(key);
 		}
 		
 		System.out.println("Erfolgreiches Lesen:");
@@ -115,17 +97,9 @@ public class Benchmark {
 		hashTable.resetReadTries();
 		
 		
-		//System.out.println();
-		//System.out.println("Reading not existing...");
+		// Erfolgloses Lesen:
 		for (Integer key : notExistingKeys) {
-			HashTableEntry entry;
-			entry = hashTable.readEntry(key);
-			/*System.out.print(" Key: ");
-			System.out.print(key);
-			System.out.print(" [");
-			System.out.print(entry);
-			System.out.print("]; ");*/
-
+			hashTable.readEntry(key);
 		}
 		
 		System.out.println("Erfolgloses Lesen:");
