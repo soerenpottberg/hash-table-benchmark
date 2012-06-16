@@ -8,6 +8,7 @@ import hashtable.HashTableEntry;
 import hashtable.IHashTable;
 import hashtable.LinearProbingHashTable;
 import hashtable.QuadraticProbingHashTable;
+import hashtable.SeparateChainingHashTable;
 
 public class Benchmark {
 
@@ -43,6 +44,7 @@ public class Benchmark {
 	static final int LINEAR_PROBING_HASH_TABLE    = 0;
 	static final int QUADRATIC_PROBING_HASH_TABLE = 1;
 	static final int DOUBLE_HASHING_HASH_TABLE    = 2;
+	static final int SEPARATE_CHAINING_HASH_TABLE = 3;
 
 	static final int EXISTING_KEY     = 0;
 	static final int NON_EXISTING_KEY = 1;
@@ -50,22 +52,26 @@ public class Benchmark {
 	static double[][] complexitiesForExistingKeys =
 		{{0, 0, 0, 0},  // LinearProbingHashTable
 		{0, 0, 0, 0},   // QuadraticProbingHashTable
-		{0, 0, 0, 0}};  // DoubleHashingHashTable
+		{0, 0, 0, 0},   // DoubleHashingHashTable
+		{0, 0, 0, 0}};  // SeparateChainingHashTable
 
 	static double[][] complexitiesForNonExistingKeys =
 		{{0, 0, 0, 0},  // LinearProbingHashTable
 		{0, 0, 0, 0},   // QuadraticProbingHashTable
-		{0, 0, 0, 0}};  // DoubleHashingHashTable
+		{0, 0, 0, 0},   // DoubleHashingHashTable
+		{0, 0, 0, 0}};  // SeparateChainingHashTable
 
 	static double[][] theoreticalComplexitiesForExistingKeys =
-		{{1.5,  5.5,  10.5, Double.POSITIVE_INFINITY},  // LinearProbingHashTable
-		{1.44, 2.85, 3.52, Double.POSITIVE_INFINITY},   // QuadraticProbingHashTable
-		{1.39, 5.56, 3.15, Double.POSITIVE_INFINITY}};  // DoubleHashingHashTable
+		{{1.5, 5.5,  10.5, Double.POSITIVE_INFINITY}, // LinearProbingHashTable
+		{1.44, 2.85, 3.52, Double.POSITIVE_INFINITY}, // QuadraticProbingHashTable
+		{1.39, 5.56, 3.15, Double.POSITIVE_INFINITY}, // DoubleHashingHashTable
+		{1.25, 1.45, 1.475, 1.5}};                    // SeparateChainingHashTable
 
 	static double[][] theoreticalComplexitiesForNonExistingKeys =
-		{{2.5,  50.5, 200.5, Double.POSITIVE_INFINITY},  // LinearProbingHashTable
-		{2.19, 11.4, 22.05, Double.POSITIVE_INFINITY},   // QuadraticProbingHashTable
-		{2,    10,   20,    Double.POSITIVE_INFINITY}};  // DoubleHashingHashTable
+		{{2.5, 50.5, 200.5, Double.POSITIVE_INFINITY}, // LinearProbingHashTable
+		{2.19, 11.4, 22.05, Double.POSITIVE_INFINITY}, // QuadraticProbingHashTable
+		{2,    10,   20,    Double.POSITIVE_INFINITY}, // DoubleHashingHashTable
+		{1.11, 1.307, 1.337, 1.368}};                  // SeparateChainingHashTable
 
 	static int keyCount;
 
@@ -73,7 +79,7 @@ public class Benchmark {
 	static Integer[] shuffledExistingKeys;
 	static Integer[] notExistingKeys;
 
-	static IHashTable[] hashTables = new IHashTable[3];
+	static IHashTable[] hashTables = new IHashTable[4];
 	
 	static IHashFunction hashFunction = new DivisionRemainderHashFunction();
 	// IHashFunction hashFunction = new MultiplicativeHashFunction();		
@@ -155,6 +161,7 @@ public class Benchmark {
         hashTables[LINEAR_PROBING_HASH_TABLE]    = new LinearProbingHashTable(STORAGE_SIZE, hashFunction);
 		hashTables[QUADRATIC_PROBING_HASH_TABLE] = new QuadraticProbingHashTable(STORAGE_SIZE, hashFunction);
 		hashTables[DOUBLE_HASHING_HASH_TABLE]    = new DoubleHashingHashTable(STORAGE_SIZE, hashFunction);
+		hashTables[SEPARATE_CHAINING_HASH_TABLE] = new SeparateChainingHashTable(STORAGE_SIZE, hashFunction);
 		
 	}
 
@@ -164,7 +171,7 @@ public class Benchmark {
 		outputSettings();
 
 		outputBigLine();
-		outputLeftLine();
+		outputLeftLine("beta");
 		outputSeperator();
 
 		for (int betaIndex = 0; betaIndex < betas.length; betaIndex++) {
