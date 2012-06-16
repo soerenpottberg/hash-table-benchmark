@@ -34,27 +34,41 @@ public class Benchmark {
 	 * Füllstände
 	 */
 	static double[] betas = {0.5, 0.9, 0.95, 1};
-	
+
 	static final int LINEAR_PROBING_HASH_TABLE    = 0;
 	static final int QUADRATIC_PROBING_HASH_TABLE = 1;
 	static final int DOUBLE_HASHING_HASH_TABLE    = 2;
-	
-	
+
+	static final int EXISTING_KEY     = 0;
+	static final int NON_EXISTING_KEY = 1;
+
+	static double[][] complexitiesForExistingKeys =
+		{{0, 0, 0, 0},  // LinearProbingHashTable
+		{0, 0, 0, 0},  // QuadraticProbingHashTable
+		{0, 0, 0, 0}}; // DoubleHashingHashTable
+
+	static double[][] complexitiesForNonExistingKeys =
+		{{0, 0, 0, 0},  // LinearProbingHashTable
+		{0, 0, 0, 0},  // QuadraticProbingHashTable
+		{0, 0, 0, 0}}; // DoubleHashingHashTable
+
 	static double[][] theoreticalComplexitiesForExistingKeys =
 		{{1.5,  5.5,  10.5, Double.POSITIVE_INFINITY},  // LinearProbingHashTable
-		 {1.44, 2.85, 3.52, Double.POSITIVE_INFINITY},  // QuadraticProbingHashTable
-		 {1.39, 5.56, 3.15, Double.POSITIVE_INFINITY}}; // DoubleHashingHashTable
-	
+		{1.44, 2.85, 3.52, Double.POSITIVE_INFINITY},  // QuadraticProbingHashTable
+		{1.39, 5.56, 3.15, Double.POSITIVE_INFINITY}}; // DoubleHashingHashTable
+
 	static double[][] theoreticalComplexitiesForNonExistingKeys =
 		{{2.5,  50.5, 200.5, Double.POSITIVE_INFINITY},  // LinearProbingHashTable
-		 {2.19, 11.4, 22.05, Double.POSITIVE_INFINITY},  // QuadraticProbingHashTable
-		 {2,    10,   20,    Double.POSITIVE_INFINITY}}; // DoubleHashingHashTable
-	
+		{2.19, 11.4, 22.05, Double.POSITIVE_INFINITY},  // QuadraticProbingHashTable
+		{2,    10,   20,    Double.POSITIVE_INFINITY}}; // DoubleHashingHashTable
+
 	static int keyCount;
-	
+
 	static Integer[] keys;
 	static Integer[] shuffledExistingKeys;
 	static Integer[] notExistingKeys;
+
+	static IHashTable[] hashTables = new IHashTable[3];
 
 
 	/**
@@ -63,19 +77,16 @@ public class Benchmark {
 	public static void main(String[] args) {
 
 		IHashFunction hashFunction = new DivisionRemainderHashFunction();
-		// IHashFunction hashFunction = new MultiplicativeHashFunction();
-		
-		IHashTable[] hashTables = new IHashTable[3];
-		
-			
+		// IHashFunction hashFunction = new MultiplicativeHashFunction();		
+
 		for (int betaIndex = 0; betaIndex < betas.length; betaIndex++) {
-			
+
 			double beta = betas[betaIndex];
-			
+
 			hashTables[LINEAR_PROBING_HASH_TABLE]    = new LinearProbingHashTable(STORAGE_SIZE, hashFunction);
 			hashTables[QUADRATIC_PROBING_HASH_TABLE] = new QuadraticProbingHashTable(STORAGE_SIZE, hashFunction);
 			hashTables[DOUBLE_HASHING_HASH_TABLE]    = new DoubleHashingHashTable(STORAGE_SIZE, hashFunction);
-			
+
 			keyCount = (int) (beta * STORAGE_SIZE);
 			keys                 = Universum.generateKeys(keyCount);
 			shuffledExistingKeys = Universum.shuffleKeys(keys);
@@ -83,43 +94,158 @@ public class Benchmark {
 
 			for (int hashTableIndex = 0; hashTableIndex < hashTables.length; hashTableIndex++) {
 				IHashTable hashTable = hashTables[hashTableIndex];
-				
+
 				System.out.println(hashTable.getClass().getSimpleName());
 				System.out.println("Beta: " + beta);
-				runTest(hashTable, theoreticalComplexitiesForExistingKeys[hashTableIndex][betaIndex], theoreticalComplexitiesForNonExistingKeys[hashTableIndex][betaIndex]);
+
+				double[] complexities = runTest(hashTable, theoreticalComplexitiesForExistingKeys[hashTableIndex][betaIndex], theoreticalComplexitiesForNonExistingKeys[hashTableIndex][betaIndex]);
+				complexitiesForExistingKeys[hashTableIndex][betaIndex]    = complexities[EXISTING_KEY];
+				complexitiesForNonExistingKeys[hashTableIndex][betaIndex] = complexities[NON_EXISTING_KEY];
+
 				System.out.println("----------------------------------------");
 			}
-			
-			System.out.println("========================================");
-		
+
+			System.out.println("\n========================================");
+
 		}
-		
+
+		System.out.println("\n\n");
+
+		outputTable();
+
+		System.out.println("\n\n");
+
 	}
 
 
-	private static void runTest(IHashTable hashTable, double theoreticalComplexityForExistingKeys, double theoreticalComplexityForNonExistingKeys) {
+	private static void outputTable() {
+
+		outputBigLine();
+		outputLeftLine();
+		outputSeperator();
+
+		for (int betaIndex = 0; betaIndex < betas.length; betaIndex++) {
+
+			double beta = betas[betaIndex];
+			outputBeta(beta);
+			outputSeperator();
+
+		}
+
+		for (int hashTableIndex = 0; hashTableIndex < hashTables.length; hashTableIndex++) {
+			IHashTable hashTable = hashTables[hashTableIndex];
+
+			outputBigLine();
+			outputLeftLine();
+			outputSeperator();
+
+			for (int betaIndex = 0; betaIndex < betas.length; betaIndex++) {
+
+				outputComplexity(complexitiesForExistingKeys[hashTableIndex][betaIndex]);
+				outputTheoreticalComplexity(theoreticalComplexitiesForExistingKeys[hashTableIndex][betaIndex]);
+				outputSeperator();
+
+			}
+
+			outputLeftLine(hashTable.getClass().getSimpleName());
+			outputSmallLine();
+			outputLeftLine();
+			outputSeperator();
+
+			for (int betaIndex = 0; betaIndex < betas.length; betaIndex++) {
+
+				outputComplexity(complexitiesForNonExistingKeys[hashTableIndex][betaIndex]);
+				outputTheoreticalComplexity(theoreticalComplexitiesForNonExistingKeys[hashTableIndex][betaIndex]);
+				outputSeperator();
+
+			}
+		}
+
+		outputBigLine();	
+
+	}
+
+
+	private static void outputBeta(double beta) {
+
+		System.out.format("%21s", beta);
+
+	}
+
+
+	private static void outputTheoreticalComplexity(double theoreticalComplexity) {
+
+		System.out.format("%-11s", " (" + theoreticalComplexity + ")");
+
+	}
+
+
+	private static void outputComplexity(double complexity) {
+
+		System.out.format("%10.2f", complexity);				
+
+	}
+
+
+	private static void outputSeperator() {
+
+		System.out.print(" | ");
+
+	}
+
+
+	private static void outputLeftLine() {
+
+		outputLeftLine("");
+
+	}
+
+	private static void outputLeftLine(String text) {
+
+		System.out.format("%-29s", "\n | " + text);
+
+	}
+
+
+	private static void outputSmallLine() {
+
+		System.out.print(" |-----------------------|-----------------------|-----------------------|-----------------------|");
+
+	}
+
+
+	private static void outputBigLine() {
+
+		System.out.print("\n |===========================|=======================|=======================|=======================|=======================|");
+
+	}
+
+
+	private static double[] runTest(IHashTable hashTable, double theoreticalComplexityForExistingKeys, double theoreticalComplexityForNonExistingKeys) {
 
 		// Speichern
 		saveEntries(hashTable);
-		
+
 		// Erfolgreiches Lesen
 		double complexityForExistingKeys = readWithExistingKeys(hashTable);
-		
-		complexityForExistingKeys = Math.round(complexityForExistingKeys * 100) / 100.0;
-		
+
 		System.out.println("Erfolgreiches Lesen:");
-		System.out.println(complexityForExistingKeys + " (" + theoreticalComplexityForExistingKeys + ")");
-		
+		System.out.format("%2.2f", complexityForExistingKeys);
+		System.out.println(" (" + theoreticalComplexityForExistingKeys + ")");
+
 		hashTable.resetReadTries();
-				
+
 		// Erfolgloses Lesen:
-        double complexityForNonExistingKeys = readWithNonExistingKeys(hashTable);
-		
-		complexityForNonExistingKeys = Math.round(complexityForNonExistingKeys * 100) / 100.0;
-		
+		double complexityForNonExistingKeys = readWithNonExistingKeys(hashTable);
+
 		System.out.println("Erfolgloses Lesen:");
-		System.out.println(complexityForNonExistingKeys + " (" + theoreticalComplexityForNonExistingKeys + ")");
-		
+		System.out.format("%2.2f", complexityForNonExistingKeys);
+		System.out.println(" (" + theoreticalComplexityForNonExistingKeys + ")");
+
+		double[] complexities = {complexityForExistingKeys, complexityForNonExistingKeys};
+
+		return complexities;
+
 	}
 
 	/**
@@ -132,9 +258,9 @@ public class Benchmark {
 		for (Integer key : notExistingKeys) {
 			hashTable.readEntry(key);
 		}
-		
+
 		return hashTable.getReadTries() / (double)keyCount;
-		
+
 	}
 
 
@@ -150,7 +276,7 @@ public class Benchmark {
 		}
 
 		return hashTable.getReadTries() / (double)keyCount;
-				
+
 	}
 
 
@@ -168,7 +294,7 @@ public class Benchmark {
 				System.err.println(e.getMessage() + " " + hashTable.getClass().getSimpleName());
 			}
 		}
-		
+
 	}
 
 }
