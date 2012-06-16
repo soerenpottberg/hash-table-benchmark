@@ -2,7 +2,6 @@ package main;
 
 import hashfunction.DivisionRemainderHashFunction;
 import hashfunction.IHashFunction;
-import hashfunction.MultiplicativeHashFunction;
 import hashtable.CoalescedHashingHashTable;
 import hashtable.DoubleHashingHashTable;
 import hashtable.HashTableEntry;
@@ -10,6 +9,7 @@ import hashtable.IHashTable;
 import hashtable.LinearProbingHashTable;
 import hashtable.QuadraticProbingHashTable;
 import hashtable.SeparateChainingHashTable;
+import hashtable.DirectChainingHashTable;
 
 public class Benchmark {
 
@@ -30,7 +30,7 @@ public class Benchmark {
 	 * 83, 87, 91, 95, 99, *103*, *107*, 111, 115, 119, 123, *127*, *131*, 135, *139*, 143, 147, *151*,
 	 * 155, 159, 163, 167, 171, 175, 179, 183, 187, 191, 195, 199, 203
 	 */
-	static final int STORAGE_SIZE = 1019; // 103, 1019, 10007
+	static final int STORAGE_SIZE = 1019; // 3, 103, 1019, 10007
 
 	/**
 	 * Füllstände
@@ -43,16 +43,18 @@ public class Benchmark {
 	static final int TESTRUNS = 10;
 
 	static final int SEPARATE_CHAINING_HASH_TABLE = 0;
-	static final int LINEAR_PROBING_HASH_TABLE    = 1;
-	static final int QUADRATIC_PROBING_HASH_TABLE = 2;
-	static final int DOUBLE_HASHING_HASH_TABLE    = 3;
-	static final int COALESCED_HASHING_HASH_TABLE = 4;
+	static final int DIRECT_CHAINING_HASH_TABLE   = 1;
+	static final int LINEAR_PROBING_HASH_TABLE    = 2;
+	static final int QUADRATIC_PROBING_HASH_TABLE = 3;
+	static final int DOUBLE_HASHING_HASH_TABLE    = 4;
+	static final int COALESCED_HASHING_HASH_TABLE = 5;
 
 	static final int EXISTING_KEY     = 0;
 	static final int NON_EXISTING_KEY = 1;
 
 	static double[][] complexitiesForExistingKeys =
 		{{0, 0, 0, 0}, // SeparateChainingHashTable
+		{0, 0, 0, 0},  // DirectChainingHashTable
 		{0, 0, 0, 0},  // LinearProbingHashTable
 		{0, 0, 0, 0},  // QuadraticProbingHashTable
 		{0, 0, 0, 0},  // DoubleHashingHashTable
@@ -60,6 +62,7 @@ public class Benchmark {
 
 	static double[][] complexitiesForNonExistingKeys =
 		{{0, 0, 0, 0}, // SeparateChainingHashTable
+		{0, 0, 0, 0},  // DirectChainingHashTable
 		{0, 0, 0, 0},  // LinearProbingHashTable
 		{0, 0, 0, 0},  // QuadraticProbingHashTable
 		{0, 0, 0, 0},  // DoubleHashingHashTable
@@ -67,6 +70,7 @@ public class Benchmark {
 
 	static double[][] theoreticalComplexitiesForExistingKeys =
 		{{1.25, 1.45, 1.475, 1.5},                    // SeparateChainingHashTable
+		{ 1.25, 1.45, 1.475, 1.5},                    // DirectChainingHashTable
 		{1.5,  5.5,  10.5, Double.POSITIVE_INFINITY}, // LinearProbingHashTable
 		{1.44, 2.85, 3.52, Double.POSITIVE_INFINITY}, // QuadraticProbingHashTable
 		{1.39, 2.56, 3.15, Double.POSITIVE_INFINITY}, // DoubleHashingHashTable
@@ -74,6 +78,7 @@ public class Benchmark {
 
 	static double[][] theoreticalComplexitiesForNonExistingKeys =
 		{{1.11, 1.307, 1.337, 1.368},                  // SeparateChainingHashTable
+		{0.5,  0.9,  0.95,  1.00},                     // DirectChainingHashTable
 		{2.5,  50.5, 200.5, Double.POSITIVE_INFINITY}, // LinearProbingHashTable
 		{2.19, 11.4, 22.05, Double.POSITIVE_INFINITY}, // QuadraticProbingHashTable
 		{2,    10,   20,    Double.POSITIVE_INFINITY}, // DoubleHashingHashTable
@@ -85,7 +90,7 @@ public class Benchmark {
 	static Integer[] shuffledExistingKeys;
 	static Integer[] notExistingKeys;
 
-	static IHashTable[] hashTables = new IHashTable[5];
+	static IHashTable[] hashTables = new IHashTable[6];
 	
 	static IHashFunction hashFunction = new DivisionRemainderHashFunction();
 	// IHashFunction hashFunction = new MultiplicativeHashFunction();		
@@ -137,7 +142,7 @@ public class Benchmark {
 		
 		    double hashTablePercentage = hashTableIndex                    / (double)hashTables.length;
 		    double betaPercentage      = (betaIndex + hashTablePercentage) / (double)betas.length;
-		    double percentage          = (testrun   + betaPercentage)      / (double)TESTRUNS;
+		    double percentage          = (testrun   + betaPercentage)      / (double)TESTRUNS * 100;
 		    System.out.format("%2.2f", percentage);
 		    System.out.println("%");
 		
@@ -169,6 +174,7 @@ public class Benchmark {
 		hashTables[DOUBLE_HASHING_HASH_TABLE]    = new DoubleHashingHashTable(STORAGE_SIZE, hashFunction);
 		hashTables[SEPARATE_CHAINING_HASH_TABLE] = new SeparateChainingHashTable(STORAGE_SIZE, hashFunction);
 		hashTables[COALESCED_HASHING_HASH_TABLE] = new CoalescedHashingHashTable(STORAGE_SIZE, hashFunction);
+		hashTables[DIRECT_CHAINING_HASH_TABLE]   = new DirectChainingHashTable(STORAGE_SIZE, hashFunction);
 		
 	}
 
@@ -179,6 +185,8 @@ public class Benchmark {
 
 		outputBigLine();
 		outputLeftLine("beta");
+		outputSeperator();
+		outputText();
 		outputSeperator();
 
 		for (int betaIndex = 0; betaIndex < betas.length; betaIndex++) {
@@ -195,6 +203,8 @@ public class Benchmark {
 			outputBigLine();
 			outputLeftLine();
 			outputSeperator();
+			outputText("Erfolgreich");
+			outputSeperator();
 
 			for (int betaIndex = 0; betaIndex < betas.length; betaIndex++) {
 
@@ -207,6 +217,8 @@ public class Benchmark {
 			outputLeftLine(hashTable.getClass().getSimpleName());
 			outputSmallLine();
 			outputLeftLine();
+			outputSeperator();
+			outputText("Erfolglos");
 			outputSeperator();
 
 			for (int betaIndex = 0; betaIndex < betas.length; betaIndex++) {
@@ -237,7 +249,18 @@ public class Benchmark {
 		System.out.format("%21s", beta);
 
 	}
+	
+    private static void outputText(String text) {
+		
+        System.out.format("%11s", text);
+		
+	}
+	
+	private static void outputText() {
+		
+		outputText("");
 
+	}
 
 	private static void outputTheoreticalComplexity(double theoreticalComplexity) {
 
@@ -275,14 +298,14 @@ public class Benchmark {
 
 	private static void outputSmallLine() {
 
-		System.out.print(" |-----------------------|-----------------------|-----------------------|-----------------------|");
+		System.out.print(" |-------------|-----------------------|-----------------------|-----------------------|-----------------------|");
 
 	}
 
 
 	private static void outputBigLine() {
 
-		System.out.print("\n |===========================|=======================|=======================|=======================|=======================|");
+		System.out.print("\n |===========================|=============|=======================|=======================|=======================|=======================|");
 
 	}
 
