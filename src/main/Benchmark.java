@@ -28,12 +28,17 @@ public class Benchmark {
 	 * 83, 87, 91, 95, 99, *103*, *107*, 111, 115, 119, 123, *127*, *131*, 135, *139*, 143, 147, *151*,
 	 * 155, 159, 163, 167, 171, 175, 179, 183, 187, 191, 195, 199, 203
 	 */
-	static final int STORAGE_SIZE = 1019; // 103
+	static final int STORAGE_SIZE = 1019; // 103, 1019, 10007
 
 	/**
 	 * Füllstände
 	 */
 	static double[] betas = {0.5, 0.9, 0.95, 1};
+	
+	/**
+	 * Anzahl der Testdurchläufe
+	 */
+	static final int TESTRUNS = 10;
 
 	static final int LINEAR_PROBING_HASH_TABLE    = 0;
 	static final int QUADRATIC_PROBING_HASH_TABLE = 1;
@@ -44,23 +49,23 @@ public class Benchmark {
 
 	static double[][] complexitiesForExistingKeys =
 		{{0, 0, 0, 0},  // LinearProbingHashTable
-		{0, 0, 0, 0},  // QuadraticProbingHashTable
-		{0, 0, 0, 0}}; // DoubleHashingHashTable
+		{0, 0, 0, 0},   // QuadraticProbingHashTable
+		{0, 0, 0, 0}};  // DoubleHashingHashTable
 
 	static double[][] complexitiesForNonExistingKeys =
 		{{0, 0, 0, 0},  // LinearProbingHashTable
-		{0, 0, 0, 0},  // QuadraticProbingHashTable
-		{0, 0, 0, 0}}; // DoubleHashingHashTable
+		{0, 0, 0, 0},   // QuadraticProbingHashTable
+		{0, 0, 0, 0}};  // DoubleHashingHashTable
 
 	static double[][] theoreticalComplexitiesForExistingKeys =
 		{{1.5,  5.5,  10.5, Double.POSITIVE_INFINITY},  // LinearProbingHashTable
-		{1.44, 2.85, 3.52, Double.POSITIVE_INFINITY},  // QuadraticProbingHashTable
-		{1.39, 5.56, 3.15, Double.POSITIVE_INFINITY}}; // DoubleHashingHashTable
+		{1.44, 2.85, 3.52, Double.POSITIVE_INFINITY},   // QuadraticProbingHashTable
+		{1.39, 5.56, 3.15, Double.POSITIVE_INFINITY}};  // DoubleHashingHashTable
 
 	static double[][] theoreticalComplexitiesForNonExistingKeys =
 		{{2.5,  50.5, 200.5, Double.POSITIVE_INFINITY},  // LinearProbingHashTable
-		{2.19, 11.4, 22.05, Double.POSITIVE_INFINITY},  // QuadraticProbingHashTable
-		{2,    10,   20,    Double.POSITIVE_INFINITY}}; // DoubleHashingHashTable
+		{2.19, 11.4, 22.05, Double.POSITIVE_INFINITY},   // QuadraticProbingHashTable
+		{2,    10,   20,    Double.POSITIVE_INFINITY}};  // DoubleHashingHashTable
 
 	static int keyCount;
 
@@ -69,6 +74,10 @@ public class Benchmark {
 	static Integer[] notExistingKeys;
 
 	static IHashTable[] hashTables = new IHashTable[3];
+	
+	static IHashFunction hashFunction = new DivisionRemainderHashFunction();
+	// IHashFunction hashFunction = new MultiplicativeHashFunction();		
+
 
 
 	/**
@@ -76,39 +85,32 @@ public class Benchmark {
 	 */
 	public static void main(String[] args) {
 
-		IHashFunction hashFunction = new DivisionRemainderHashFunction();
-		// IHashFunction hashFunction = new MultiplicativeHashFunction();		
+		for (int testrun = 0; testrun < TESTRUNS; testrun++) {
+			for (int betaIndex = 0; betaIndex < betas.length; betaIndex++) {
+				double beta = betas[betaIndex];
 
-		for (int betaIndex = 0; betaIndex < betas.length; betaIndex++) {
+				initializeHashTables(hashFunction);
+				
+				initializeKeys(beta);
 
-			double beta = betas[betaIndex];
+				for (int hashTableIndex = 0; hashTableIndex < hashTables.length; hashTableIndex++) {
+					IHashTable hashTable = hashTables[hashTableIndex];
 
-			hashTables[LINEAR_PROBING_HASH_TABLE]    = new LinearProbingHashTable(STORAGE_SIZE, hashFunction);
-			hashTables[QUADRATIC_PROBING_HASH_TABLE] = new QuadraticProbingHashTable(STORAGE_SIZE, hashFunction);
-			hashTables[DOUBLE_HASHING_HASH_TABLE]    = new DoubleHashingHashTable(STORAGE_SIZE, hashFunction);
+					outputProgressBar(testrun, betaIndex, hashTableIndex);
+					System.out.println(hashTable.getClass().getSimpleName());
+					System.out.println("Beta: " + beta);
 
-			keyCount = (int) (beta * STORAGE_SIZE);
-			keys                 = Universum.generateKeys(keyCount);
-			shuffledExistingKeys = Universum.shuffleKeys(keys);
-			notExistingKeys      = Universum.generateNotExistingKeys(keyCount);
+					double[] complexities = runTest(hashTable, theoreticalComplexitiesForExistingKeys[hashTableIndex][betaIndex], theoreticalComplexitiesForNonExistingKeys[hashTableIndex][betaIndex]);
+					complexitiesForExistingKeys[hashTableIndex][betaIndex]    += complexities[EXISTING_KEY];
+					complexitiesForNonExistingKeys[hashTableIndex][betaIndex] += complexities[NON_EXISTING_KEY];
 
-			for (int hashTableIndex = 0; hashTableIndex < hashTables.length; hashTableIndex++) {
-				IHashTable hashTable = hashTables[hashTableIndex];
-
-				System.out.println(hashTable.getClass().getSimpleName());
-				System.out.println("Beta: " + beta);
-
-				double[] complexities = runTest(hashTable, theoreticalComplexitiesForExistingKeys[hashTableIndex][betaIndex], theoreticalComplexitiesForNonExistingKeys[hashTableIndex][betaIndex]);
-				complexitiesForExistingKeys[hashTableIndex][betaIndex]    = complexities[EXISTING_KEY];
-				complexitiesForNonExistingKeys[hashTableIndex][betaIndex] = complexities[NON_EXISTING_KEY];
-
-				System.out.println("----------------------------------------");
+					System.out.println("----------------------------------------");
+				}
+				System.out.println("\n========================================");
 			}
-
-			System.out.println("\n========================================");
-
 		}
 
+		outputProgressBar(TESTRUNS - 1, betas.length - 1, hashTables.length);
 		System.out.println("\n\n");
 
 		outputTable();
@@ -118,7 +120,48 @@ public class Benchmark {
 	}
 
 
+	private static void outputProgressBar(int testrun, int betaIndex,
+			int hashTableIndex) {
+		
+		    double hashTablePercentage = hashTableIndex                    / (double)hashTables.length;
+		    double betaPercentage      = (betaIndex + hashTablePercentage) / (double)betas.length;
+		    double percentage          = (testrun   + betaPercentage)      / (double)TESTRUNS;
+		    System.out.format("%2.2f", percentage);
+		    System.out.println("%");
+		
+	}
+
+
+	/**
+	 * Erstellt zufällige Schlüssel für die Tests
+	 * @param beta der zu ereichende Füllstand
+	 */
+	private static void initializeKeys(double beta) {
+
+		keyCount             = (int) (beta * STORAGE_SIZE);
+		keys                 = Universum.generateKeys(keyCount);
+		shuffledExistingKeys = Universum.shuffleKeys(keys);
+		notExistingKeys      = Universum.generateNotExistingKeys(keyCount);
+		
+	}
+
+
+	/**
+	 * Initialisiert die Hashtables
+	 * @param hashFunction
+	 */
+	private static void initializeHashTables(IHashFunction hashFunction) {
+
+        hashTables[LINEAR_PROBING_HASH_TABLE]    = new LinearProbingHashTable(STORAGE_SIZE, hashFunction);
+		hashTables[QUADRATIC_PROBING_HASH_TABLE] = new QuadraticProbingHashTable(STORAGE_SIZE, hashFunction);
+		hashTables[DOUBLE_HASHING_HASH_TABLE]    = new DoubleHashingHashTable(STORAGE_SIZE, hashFunction);
+		
+	}
+
+
 	private static void outputTable() {
+		
+		outputSettings();
 
 		outputBigLine();
 		outputLeftLine();
@@ -166,6 +209,15 @@ public class Benchmark {
 	}
 
 
+	private static void outputSettings() {
+		
+		System.out.print("   Speicherkapazität: " + STORAGE_SIZE);
+		System.out.print("   Testläufe: " + TESTRUNS);
+		System.out.print("   Hashfunktion: " + hashFunction.getClass().getSimpleName() + "\n");
+		
+	}
+
+
 	private static void outputBeta(double beta) {
 
 		System.out.format("%21s", beta);
@@ -182,7 +234,7 @@ public class Benchmark {
 
 	private static void outputComplexity(double complexity) {
 
-		System.out.format("%10.2f", complexity);				
+		System.out.format("%10.2f", complexity / (double)TESTRUNS);				
 
 	}
 
