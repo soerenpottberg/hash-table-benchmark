@@ -36,15 +36,22 @@ public class HashTableTest extends TestCase {
 		
 		try {
             assertEquals(0, hashTable.getSaveTries());
+            assertEquals(0, hashTable.getReadTries());
 			hashTable.saveEntry(new HashTableEntry(0, null));
+			hashTable.readEntry(0);
 			assertEquals(1, hashTable.getSaveTries());
+			assertEquals(1, hashTable.getReadTries());
 			hashTable.saveEntry(new HashTableEntry(1, null));
+			hashTable.readEntry(1);
 			assertEquals(3, hashTable.getSaveTries());
+			assertEquals(3, hashTable.getReadTries());
 			hashTable.saveEntry(new HashTableEntry(2, null));
+			hashTable.readEntry(2);
             assertEquals(6, hashTable.getSaveTries());
+            assertEquals(6, hashTable.getReadTries());
 		} catch (Exception e) {
 			e.printStackTrace();
-			assertTrue(false);
+			fail();
 		}
 		
 	}
