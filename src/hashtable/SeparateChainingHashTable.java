@@ -57,7 +57,6 @@ public class SeparateChainingHashTable extends HashTable {
 		readTries++;
 		if(hashTable[hashCode] != null && hashTable[hashCode].getKey() != key) {
 			entry = hashTable[hashCode];
-			readTries++;
 			while(entry.getKey() != key && entry.hasReference()) {
 				entry = entry.getReference();
 				readTries++;
