@@ -10,7 +10,7 @@ import hashfunction.IHashFunction;
  */
 public class SeparateChainingHashTable extends HashTable {
 
-	private HashTableEntryWithReference[] hashTable;
+	protected HashTableEntryWithReference[] hashTable;
 
 	public SeparateChainingHashTable(int storageSize, IHashFunction hashFunction) {
 		
