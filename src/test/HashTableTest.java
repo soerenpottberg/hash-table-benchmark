@@ -1,8 +1,8 @@
 package test;
 
 import hashtable.HashTable;
-import hashtable.HashTableEntry;
 import hashtable.IHashTable;
+import hashtableentry.HashTableEntry;
 
 import junit.framework.TestCase;
 

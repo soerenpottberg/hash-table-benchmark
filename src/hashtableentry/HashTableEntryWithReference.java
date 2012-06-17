@@ -1,4 +1,5 @@
-package hashtable;
+package hashtableentry;
+
 
 public class HashTableEntryWithReference extends HashTableEntry {
 	

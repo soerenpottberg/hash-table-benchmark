@@ -1,4 +1,4 @@
-package hashtable;
+package hashtableentry;
 
 public class HashTableEntry {
 	

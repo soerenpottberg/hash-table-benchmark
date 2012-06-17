@@ -1,5 +1,7 @@
 package hashtable;
 
+import hashtableentry.HashTableEntry;
+
 public interface IHashTable {
 
 	/**

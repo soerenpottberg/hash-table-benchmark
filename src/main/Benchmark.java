@@ -4,12 +4,12 @@ import hashfunction.DivisionRemainderHashFunction;
 import hashfunction.IHashFunction;
 import hashtable.CoalescedHashingHashTable;
 import hashtable.DoubleHashingHashTable;
-import hashtable.HashTableEntry;
 import hashtable.IHashTable;
 import hashtable.LinearProbingHashTable;
 import hashtable.QuadraticProbingHashTable;
 import hashtable.SeparateChainingHashTable;
 import hashtable.DirectChainingHashTable;
+import hashtableentry.HashTableEntry;
 
 public class Benchmark {
 

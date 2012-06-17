@@ -1,6 +1,7 @@
 package hashtable;
 
 import hashfunction.IHashFunction;
+import hashtableentry.HashTableEntry;
 
 
 /**

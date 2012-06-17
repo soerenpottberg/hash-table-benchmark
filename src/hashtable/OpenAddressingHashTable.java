@@ -4,6 +4,7 @@ import java.util.Arrays;
 
 import probingfunction.IProbingFunction;
 import hashfunction.IHashFunction;
+import hashtableentry.HashTableEntry;
 
 public abstract class OpenAddressingHashTable extends HashTable{
 
