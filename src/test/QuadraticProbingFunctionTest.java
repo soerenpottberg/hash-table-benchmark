@@ -2,7 +2,6 @@ package test;
 
 import hashtable.HashTable;
 
-import java.util.Arrays;
 import java.util.TreeSet;
 
 import org.junit.Test;
